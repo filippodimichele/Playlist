@@ -1,4 +1,4 @@
-
+/* 
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { useNavigate, useParams } from "react-router";
@@ -6,6 +6,7 @@ import type { Song } from "../data/playlist";
 import AddSongFormV2 from "../components/AddSongFormV2";
 import Button from "../components/Button";
 import { env } from "../utils/env";
+import {AutoSkeleton} from 'auto-skeleton-react'
 
 const EditPage = () => {
     const { id } = useParams();
@@ -76,20 +77,25 @@ const EditPage = () => {
                     >
                         <ArrowLeft />
                     </Button>
-
                     <h1 className="font-bold text-4xl">
                         Modifica brano
                     </h1>
+
+
                 </div>
 
+                    <AutoSkeleton loading ={!song}>
                 <AddSongFormV2
                     defaultValues={song}
                     onSubmit={onUpdateSong}
                     onCancel={() => navigate("/")}
-                />
+                    />
+                
+                    </AutoSkeleton>
             </div>
         </section>
     );
 };
 
 export default EditPage;
+ */

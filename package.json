@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "auto-skeleton-react": "^1.0.5",
     "clsx": "^2.1.1",
     "concurrently": "^10.0.7",
     "json-server": "^1.0.0-beta.15",

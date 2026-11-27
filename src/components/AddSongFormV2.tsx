@@ -1,6 +1,4 @@
-
-import { useEffect, useState, useRef } from "react";
-import type { FormEvent } from "react";
+import { useEffect, useState } from "react";
 import Button from "./Button"
 import type { Song } from "../data/playlist";
 import { Loader2, Plus, Save } from "lucide";
@@ -15,7 +13,6 @@ type AddSongFormProps = {
 
 const defaultState = {
     isSubmitting: false,
-    submitError: "",
     values: {
         title: "",
         autor: "",
@@ -30,17 +27,15 @@ const defaultState = {
 
 const AddSongFormV2 = ({ defaultValues, onSubmit, onCancel }: AddSongFormProps) => {
     const [formState, setFormState] = useState(defaultState);
-    const isSubmittingRef = useRef(false);
+
     useEffect(() => {
         setFormState({ ...defaultState, values: defaultValues || defaultState.values })
     }, [defaultValues])
 
-    async function addSong(e: FormEvent<HTMLFormElement>) {
+    async function addSong(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
-        if (isSubmittingRef.current) return;
 
         let errors = { ...defaultState.errors };
-
 
         setFormState(prev => ({
             ...prev,
@@ -78,21 +73,8 @@ const AddSongFormV2 = ({ defaultValues, onSubmit, onCancel }: AddSongFormProps) 
         };
 
         setFormState(prev => ({ ...prev, isSubmitting: true }));
-
-        try {
-            await onSubmit?.(formState.values);
-            setFormState(defaultState);
-        } catch {
-            setFormState(prev => ({
-                ...prev,
-                isSubmitting: false,
-                submitError: "Errore durante il salvataggio del brano",
-            }));
-        } finally {
-            isSubmittingRef.current = false;
-        }
-
-
+        await onSubmit?.(formState.values);
+        setFormState(defaultState);
     }
 
     return (
@@ -135,9 +117,8 @@ const AddSongFormV2 = ({ defaultValues, onSubmit, onCancel }: AddSongFormProps) 
             />
             {formState.errors.duration.map((error, i) => <p key={i} className="text-red-500 text-xs">{error}</p>)}
 
-            <div className="flex gap-4">
+            <div className="flex gap-4" data-skeleton-role="container">
                 <Button
-                    type="submit"
                     disabled={formState.isSubmitting}
                     className="w-fit"
                 >

@@ -6,6 +6,7 @@ import { env } from "../utils/env";
 import { Link, useNavigate } from "react-router";
 import Button from "../components/Button";
 import { Plus } from "lucide-react";
+import { AutoSkeleton } from "auto-skeleton-react";
 
 
 
@@ -21,16 +22,19 @@ function HomePage() {
   // Lo state nello specifico serve a salvare un qualsiasi valore (come una variabile normale) e al cambiare del suo valore fa "re-rendering" del componente
   const [playlist, setPlaylist] = useState<Song[]>([]);
   const [playingSong, setPlayingSong] = useState<Song['id']>();
+  const [loading, setloading] = useState(true);
   // const [editingSong, setEditingSong] = useState<Song>();
   const navigate = useNavigate();
 
   const playingSongObj = playlist.find((song) => song.id === playingSong);
 
   useEffect(() => {
+    document.title = "PlayBasic"
     fetch(env.backendUrl + '/playlist')
       .then(res => res.json())
       .then(data => {
         setPlaylist(data);
+        setloading(false);
       })
   }, [])
 
@@ -93,17 +97,31 @@ function HomePage() {
             {/* qui va la lista dei brani */}
             {/* Dato che all'interno del JSX posso scrivere solo espressioni JS tra le graffe, l'unico modo per fare dei cicli, è usare il .map che mi permette di convertire un qualsiasi array in un array di JSX. */}
             {/* Il map, come qualsiasi cosa che torna del JSX, può toranre un solo elemento, quindi con più elementi uso il Fragment. Inoltre l'elemento che ritorno deve avere la prop "key" e deve essere univoca */}
-            {playlist.map(song =>
-              <SongRow
-                key={song.id}
-                onClick={() => setPlayingSong(song.id === playingSong ? undefined : song.id)}
-                song={song}
-                active={song.id === playingSong}
-                onDelete={() => onDeleteSong(song.id)}
-                onEdit={() => navigate(`/song/${song.id}`)}
+            {!playlist.length} ?
+            {loading ?
+              <AutoSkeleton loading>
+                <SongRow song={{ id: "", autor: "", duration: 0, title: "" }} />
+                <SongRow song={{ id: "", autor: "", duration: 0, title: "" }} />
+                <SongRow song={{ id: "", autor: "", duration: 0, title: "" }} />
+                <SongRow song={{ id: "", autor: "", duration: 0, title: "" }} />
+              </AutoSkeleton>
+              : !playlist.length ?
+              <div>
+                <p>Non ci sono canzoni</p>
+              </div>
+              : playlist.map(song =>
+                <SongRow
+                  key={song.id}
+                  onClick={() => setPlayingSong(song.id === playingSong ? undefined : song.id)}
+                  song={song}
+                  active={song.id === playingSong}
+                  onDelete={() => onDeleteSong(song.id)}
+                  onEdit={() => navigate(`/song/${song.id}`)}
 
-              />
-            )}
+                />
+            
+              )}
+            
           </div>
           {/* in riproduzione */}
           {/* Per fare rendering condizionale il react, uso l'operatore logico AND (&&) */}

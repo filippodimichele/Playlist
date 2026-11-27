@@ -4,20 +4,26 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 import HomePage from './pages/HomePage'
 import NewSongPage from './pages/NewSongPage'
-import Editpage from './pages/EditPage'
+import SongPage from './pages/SongPage'
+import MainLayout from './layouts/MainLayout'
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <HomePage />
-  },
-  {
-    path: '/song/new',
-    element: <NewSongPage />
-  },
-  {
-    path: '/song/:id',
-    element: <Editpage />
+    element: <MainLayout />,
+    children: [
+      {
+        path: '/',
+        element: <HomePage />
+      },
+      {
+        path: '/song/new',
+        element: <NewSongPage />
+      },
+      {
+        path: '/song/:id',
+        element: <SongPage />
+      }
+    ]
   }
 ])
 

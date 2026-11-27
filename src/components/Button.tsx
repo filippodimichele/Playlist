@@ -1,5 +1,4 @@
-
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { cn } from "../utils/cn";
 
 type ButtonProps = ComponentProps<'button'> & {
@@ -30,7 +29,6 @@ const Button = ({ variant = 'primary', onlyIcon, ...props }: ButtonProps) => {
                 props.className,
             )}
         >
-            {props.children}
         </button>
     )
 }

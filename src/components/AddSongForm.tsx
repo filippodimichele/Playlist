@@ -10,100 +10,75 @@ type AddSongFormProps = {
 
 const AddSongForm = ({ OnSubmit }: AddSongFormProps) => {
     const [newSongTitle, setNewSongTitle] = useState("");
-    const [newSongAuthor, setNewAuthor] = useState("");
-    const [newSongDuartion, setNewSongDuration] = useState(0);
-
+    const [newSongAuthor, setNewSongAuthor] = useState("");
+    const [newSongDuration, setNewSongDuration] = useState(0);
     const [titleError, setTitleError] = useState<string[]>([]);
     const [autorError, setAutorError] = useState<string[]>([]);
-    
 
     function addSong(e: React.SubmitEvent<HTMLFormElement>) {
         e.preventDefault();
         setTitleError([]);
-        setAutorError([""]);
-
+        setAutorError([]);
         let errors = false;
 
-
-        if (!newSongTitle.trim()) {
-            setTitleError(["Titolo obbligatorio"]);
+        if (!newSongTitle) {
+            setTitleError(['Titolo obbligatorio']);
             errors = true;
         } else {
-            if (newSongTitle.trim().length <= 2) {
-                setTitleError(prev => [
-                    ...prev,
-                    "Inserisci almeno 3 caratteri"
-                ]);
+            if (newSongTitle.length <= 2) {
+                setTitleError(prev => Array.from(new Set([...prev, 'Inserisci almeno 3 caratteri'])))
                 errors = true;
             }
-
-            if (/[!@%]/.test(newSongTitle)) {
-                setTitleError(prev => [
-                    ...prev,
-                    "Non puoi inserire uno di questi caratteri (!@%)"
-                ]);
+            if (/[!@%$]/.test(newSongTitle)) {
+                setTitleError(prev => Array.from(new Set([...prev, 'Non puoi inserire uno di questi caratteri (!@%$)'])))
                 errors = true;
             }
         }
 
-        if (!newSongAuthor.trim()) {
+        if (!newSongAuthor) {
             setAutorError(['Autore obbligatorio']);
             errors = true;
         }
 
         if (errors) return;
 
-        console.log(newSongTitle, newSongAuthor, newSongDuartion);
+        setNewSongTitle("");
+        setNewSongAuthor("");
+        setNewSongDuration(0);
 
         OnSubmit?.({
             title: newSongTitle,
             autor: newSongAuthor,
-            duration: newSongDuartion,
-        });
-
-        setNewSongTitle("");
-        setNewAuthor("");
-        setNewSongDuration(0);
-        setTitleError([]);
-        setAutorError([]);
+            duration: newSongDuration,
+        })
     }
 
     return (
         <form onSubmit={addSong} className="mb-8 flex flex-col gap-4">
             <input
-                className="bg-gray-200 rounded-md w-full py-2 px-4"
+                className="bg-gray-200 rounded-full w-full py-2 px-4"
                 placeholder="Titolo"
                 value={newSongTitle}
-                onChange={(e) => setNewSongTitle(e.target.value)}
+                onChange={(e) => { setNewSongTitle(e.target.value) }}
             />
-
-            {titleError.map((error, i) =>  <p key={i} className="text-red-500 text-xs">{error}</p>)}
+            {titleError.map((error, i) => <p key={i} className="text-red-500 text-xs">{error}</p>)}
             <input
-                className="bg-gray-200 rounded-md w-full py-2 px-4"
+                className="bg-gray-200 rounded-full w-full py-2 px-4"
                 placeholder="Autore"
                 value={newSongAuthor}
-                onChange={(e) => setNewAuthor(e.target.value) }
-                />
-
-            {autorError.map((error, index) => (
-                <p key={index} className="text-red-500 text-xs">
-                    {error}
-                </p>
-            ))}
-
+                onChange={(e) => { setNewSongAuthor(e.target.value) }}
+            />
+            {autorError && <p className="text-red-500 text-xs">{autorError}</p>}
             <input
-                className="bg-gray-200 rounded-md w-full py-2 px-4"
+                className="bg-gray-200 rounded-full w-full py-2 px-4"
                 placeholder="Durata"
                 type="number"
-                value={newSongDuartion}
-                onChange={(e) => setNewSongDuration(+e.target.value)}
+                value={newSongDuration}
+                onChange={(e) => { setNewSongDuration(+e.target.value) }}
             />
-
-            <Button className="w-fit">
-                Aggiungi una canzone
-            </Button>
+            <Button className="w-fit">Aggiungi canzone</Button>
         </form>
-    );
-};
+    )
+}
 
-export default AddSongForm;
+export default AddSongForm
